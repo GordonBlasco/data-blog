@@ -1,4 +1,4 @@
-baseurl = "https://priceless-einstein-c4f34f.netlify.com"
+baseurl = "https://priceless-einstein-c4f34f.netlify.com/"
 title = "Ghostwriter example"
 theme = "ghostwriter"
 languageCode = "en-us"

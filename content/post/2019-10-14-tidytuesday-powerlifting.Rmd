@@ -1,0 +1,24 @@
+---
+title: tidytuesday - powerlifting
+author: G
+date: '2019-10-14'
+slug: tidytuesday-powerlifting
+categories: []
+tags:
+  - tidytuesday
+description: ''
+---
+
+
+```{r libraries, message=FALSE}
+library(tidyverse)
+```
+
+
+```{r}
+ggplot(mtcars, aes(x = mpg, y = hp))+
+  geom_point() +
+  theme_classic()
+```
+
+

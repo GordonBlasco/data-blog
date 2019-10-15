@@ -1,8 +1,8 @@
 baseurl = "https://priceless-einstein-c4f34f.netlify.com/"
-title = "Ghostwriter example"
+title = "The Joy of Analysis"
 theme = "ghostwriter"
 languageCode = "en-us"
-copyright = "My Name"
+copyright = "G"
 disqusShortname = "XXX"
 googleAnalytics = "XXX"
 ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
@@ -26,18 +26,18 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
 [Params]
     mainSections = ["post"]
     intro = true
-    headline = "another test i am so tired"
-    description = "Ghostwriter example description"
-    github = "https://github.com/XXX"
-    gitlab = "https://gitlab.com/XXX"
-    linkedin = "https://linkedin.com/in/XXX/"
-    gplus = "https://google.com/+XXX"
-    twitter = "https://twitter.com/XXX"
-    stackoverflow = "https://stackoverflow.com/users/XXX/YYY"
-    facebook = "https://www.facebook.com/username"
-    email = "XXX@example.com"
+    headline = "The Joy of Analysis"
+    description = ""
+    #github = "https://github.com/XXX"
+    #gitlab = "https://gitlab.com/XXX"
+    #linkedin = "https://linkedin.com/in/XXX/"
+    #gplus = "https://google.com/+XXX"
+    #twitter = "https://twitter.com/XXX"
+    #stackoverflow = "https://stackoverflow.com/users/XXX/YYY"
+    #facebook = "https://www.facebook.com/username"
+    #email = "XXX@example.com"
     opengraph = true
-    shareTwitter = true
+    shareTwitter = false
     shareFacebook = true
     shareGooglePlus = true
     shareLinkedIn = false
@@ -48,7 +48,7 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
     exponeaTarget = ""
     exponeaToken = ""
     exponeaTrackVisits = false
-    readingTime = true
+    readingTime = false
     readingTimeText = "Estimated reading time:"
 
 [Permalinks]
@@ -58,16 +58,6 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
     name = "Blog"
     url = "/"
     weight = 1
-
-[[menu.main]]
-    name = "Projects"
-    url = "/project/"
-    weight = 2
-
-[[menu.main]]
-    name = "Contact"
-    url = "/page/contact/"
-    weight = 3
 
 [[menu.main]]
     name = "About"

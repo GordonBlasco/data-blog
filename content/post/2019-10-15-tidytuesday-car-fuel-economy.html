@@ -43,7 +43,7 @@ ggplot(cars_heat, aes(x= year, y= make))+
   geom_tile(aes(fill = mean))+
   scale_fill_viridis(option = &quot;magma&quot;)+
   theme_classic()+
-  labs(Title = &quot;Cars yearly mean MPG&quot;,
+  labs(title = &quot;Cars yearly mean MPG&quot;,
        x= &quot;&quot;, 
        y = &quot;&quot;)+
   guides(fill=guide_legend(title=&quot;Mean City MPG&quot;))</code></pre>

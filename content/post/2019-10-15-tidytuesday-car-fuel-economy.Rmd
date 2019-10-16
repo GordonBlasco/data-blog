@@ -8,6 +8,7 @@ tags:
   - tidytuesday
 description: ''
 ---
+
 # Load the packages and data! 
 ```{r message=FALSE, warning=FALSE}
 library(tidyverse)
@@ -41,13 +42,13 @@ ggplot(cars_heat, aes(x= year, y= make))+
   geom_tile(aes(fill = mean))+
   scale_fill_viridis(option = "magma")+
   theme_classic()+
-  labs(Title = "Cars yearly mean MPG",
+  labs(title = "Cars yearly mean MPG",
        x= "", 
        y = "")+
   guides(fill=guide_legend(title="Mean City MPG"))
-  
-  
 
-    
+
+
+
 ```
 

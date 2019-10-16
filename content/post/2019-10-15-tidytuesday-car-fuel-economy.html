@@ -1,0 +1,51 @@
+---
+title: tidytuesday - car fuel economy
+author: G
+date: '2019-10-15'
+slug: tidytuesday-car-fuel-economy
+categories: []
+tags:
+  - tidytuesday
+description: ''
+---
+
+
+
+<div id="load-the-packages-and-data" class="section level1">
+<h1>Load the packages and data!</h1>
+<pre class="r"><code>library(tidyverse)
+library(viridis)
+
+cars &lt;- readr::read_csv(&quot;https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-10-15/big_epa_cars.csv&quot;)</code></pre>
+</div>
+<div id="clean-the-data-and-plot-it" class="section level1">
+<h1>Clean the data and plot it</h1>
+<pre class="r"><code>big_makers &lt;- cars %&gt;% 
+  select(make, model, year, UCity,UHighway) %&gt;% 
+  group_by(make) %&gt;% 
+  tally() %&gt;% 
+  arrange(-n) %&gt;% 
+  head(30) %&gt;% 
+  pull(make)
+
+cars_clean &lt;- cars %&gt;% 
+  select(make, model, year, UCity,UHighway) %&gt;% 
+  filter(make %in% big_makers) 
+
+cars_heat &lt;- cars_clean %&gt;% 
+  group_by(make, year) %&gt;% 
+  filter(!is.na(UCity)) %&gt;% 
+  summarise(
+    mean = mean(UCity)
+  )
+  
+ggplot(cars_heat, aes(x= year, y= make))+
+  geom_tile(aes(fill = mean))+
+  scale_fill_viridis(option = &quot;magma&quot;)+
+  theme_classic()+
+  labs(Title = &quot;Cars yearly mean MPG&quot;,
+       x= &quot;&quot;, 
+       y = &quot;&quot;)+
+  guides(fill=guide_legend(title=&quot;Mean City MPG&quot;))</code></pre>
+<p><img src="/post/2019-10-15-tidytuesday-car-fuel-economy_files/figure-html/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>

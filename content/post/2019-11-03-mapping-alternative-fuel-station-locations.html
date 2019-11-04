@@ -1,0 +1,70 @@
+---
+title: Mapping Alternative Fuel Station Locations
+author: ''
+date: '2019-11-03'
+slug: mapping-alternative-fuel-station-locations
+categories: []
+tags: []
+description: ''
+---
+
+
+
+<div id="load-needed-libraries" class="section level1">
+<h1>Load needed libraries</h1>
+<pre class="r"><code>library(tidyverse)
+library(janitor)       # cleans column names
+library(USAboundaries) # Download shape files
+library(sf)            # Used for spatial opperations
+library(lubridate)
+library(gganimate)</code></pre>
+<p>This data comes from <a href="https://data.ca.gov/dataset/alternative-fuel-station-locations/resource/843e18ca-7a96-4485-a9fe-1ecdd9bbb9b5" class="uri">https://data.ca.gov/dataset/alternative-fuel-station-locations/resource/843e18ca-7a96-4485-a9fe-1ecdd9bbb9b5</a></p>
+<pre class="r"><code>df &lt;- read_csv(&#39;https://data.ca.gov/dataset/d2136de9-4b98-49f5-b076-022a046cd894/resource/843e18ca-7a96-4485-a9fe-1ecdd9bbb9b5/download/alternative-fuel-station-locations.csv&#39;) %&gt;% 
+  clean_names()
+
+
+# get california shapefile from the USAboundaries package
+cali &lt;- us_states(resolution = &quot;high&quot;, states = &quot;CA&quot;)
+
+
+# Clean up the gas station data and cast as a sf object
+electric &lt;- df %&gt;% filter(fuel_type_code == &quot;ELEC&quot;) %&gt;% 
+  filter(!str_detect(latitude, &quot;[a-z]&quot;)) %&gt;%
+  mutate(longitude = as.numeric(longitude),
+         latitude = as.numeric(latitude)) %&gt;% 
+  st_as_sf(coords=c(&quot;longitude&quot;,&quot;latitude&quot;), crs=4326, remove=FALSE) %&gt;% 
+  mutate(open_date = mdy(open_date),
+         year = year(open_date)) %&gt;% 
+  filter(!is.na(year))</code></pre>
+<div id="now-we-need-to-apply-a-spatial-filter-to-only-select-points-in-california" class="section level2">
+<h2>Now we need to apply a spatial filter to only select points in California</h2>
+<pre class="r"><code>in2 &lt;- electric[cali,] # This filters for points inside of the california shape file</code></pre>
+</div>
+<div id="make-a-good-ole-ggplot-map" class="section level2">
+<h2>Make a good ole ggplot map</h2>
+<pre class="r"><code>map &lt;- ggplot(in2)+
+  geom_sf(data = cali,
+          fill = &quot;grey30&quot;,
+          color = &quot;white&quot;)+
+  geom_point(aes(x = in2$longitude, y = in2$latitude, group = seq_along(year)),
+             shape = 21,
+             color = &quot;white&quot;,
+             ldw = .5,
+             fill = &quot;purple&quot;) +
+  labs(x = &quot;&quot;,
+       y = &quot;&quot;) +
+  theme_void() +
+  theme(panel.background = element_rect(fill = &quot;grey20&quot;))</code></pre>
+<pre><code>## Warning: Ignoring unknown parameters: ldw</code></pre>
+<pre class="r"><code>map</code></pre>
+<p><img src="/post/2019-11-03-mapping-alternative-fuel-station-locations_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+</div>
+<div id="render-an-animated-version" class="section level2">
+<h2>Render an animated version</h2>
+<pre class="r"><code>map + transition_states(year)+
+  labs(title = &quot;Gas Stations With Electric Fueling Options {closest_state}&quot;)+
+  shadow_mark(past = TRUE, alpha = .5) +
+  ease_aes(&#39;cubic-in-out&#39;)</code></pre>
+<p><img src="/post/2019-11-03-mapping-alternative-fuel-station-locations_files/figure-html/unnamed-chunk-5-1.gif" /><!-- --></p>
+</div>
+</div>

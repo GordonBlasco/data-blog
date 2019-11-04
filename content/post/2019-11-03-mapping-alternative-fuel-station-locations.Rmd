@@ -49,7 +49,7 @@ electric <- df %>% filter(fuel_type_code == "ELEC") %>%
 in2 <- electric[cali,] # This filters for points inside of the california shape file
   
 ```
-
+test_text
 
 ## Make a good ole ggplot map
 ```{r}

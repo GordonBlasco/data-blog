@@ -1,4 +1,4 @@
-baseurl = "https://joyofanalysis.com"
+baseurl = "https://joyofanalysis.com/"
 title = "The Joy of Analysis"
 theme = "ghostwriter"
 languageCode = "en-us"

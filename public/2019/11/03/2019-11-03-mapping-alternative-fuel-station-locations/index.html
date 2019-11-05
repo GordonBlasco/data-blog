@@ -8,7 +8,7 @@
 df &lt;- read_csv(&#39;https://data.ca.gov/dataset/d2136de9-4b98-49f5-b076-022a046cd894/resource/843e18ca-7a96-4485-a9fe-1ecdd9bbb9b5/download/alternative-fuel-station-locations.csv&#39;) %&gt;% clean_names() # get california shapefile from the USAboundaries package cali &lt;- us_states(resolution = &quot;high&quot;, states = &quot;CA&quot;) # Clean up the gas station data and cast as a sf object electric &lt;- df %&gt;% filter(fuel_type_code == &quot;ELEC&quot;) %&gt;% filter(!">
         <meta name="HandheldFriendly" content="True">
         <meta name="MobileOptimized" content="320">
-        <meta name="generator" content="Hugo 0.58.3" />
+        <meta name="generator" content="Hugo 0.59.1" />
         <meta name="robots" content="index,follow">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta property="og:title" content="Mapping Alternative Fuel Station Locations">

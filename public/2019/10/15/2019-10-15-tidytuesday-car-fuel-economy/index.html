@@ -7,7 +7,7 @@
         <meta name="description" content=" Load the packages and data! library(tidyverse) library(viridis) cars &lt;- readr::read_csv(&quot;https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-10-15/big_epa_cars.csv&quot;)  Clean the data and plot it big_makers &lt;- cars %&gt;% select(make, model, year, UCity,UHighway) %&gt;% group_by(make) %&gt;% tally() %&gt;% arrange(-n) %&gt;% head(30) %&gt;% pull(make) cars_clean &lt;- cars %&gt;% select(make, model, year, UCity,UHighway) %&gt;% filter(make %in% big_makers) cars_heat &lt;- cars_clean %&gt;% group_by(make, year) %&gt;% filter(!is.na(UCity)) %&gt;% summarise( mean = mean(UCity) ) ggplot(cars_heat, aes(x= year, y= make))&#43; geom_tile(aes(fill = mean))&#43; scale_fill_viridis(option = &quot;magma&quot;)&#43; theme_classic()&#43; labs(title = &quot;Cars yearly mean MPG&quot;, x= &quot;&quot;, y = &quot;&quot;)&#43; guides(fill=guide_legend(title=&quot;Mean City MPG&quot;))  ">
         <meta name="HandheldFriendly" content="True">
         <meta name="MobileOptimized" content="320">
-        <meta name="generator" content="Hugo 0.58.3" />
+        <meta name="generator" content="Hugo 0.59.1" />
         <meta name="robots" content="index,follow">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta property="og:title" content="tidytuesday - car fuel economy">

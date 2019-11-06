@@ -129,10 +129,9 @@ electric &lt;- df %&gt;% filter(fuel_type_code == &quot;ELEC&quot;) %&gt;%
 <div id="now-we-need-to-apply-a-spatial-filter-to-only-select-points-in-california" class="section level2">
 <h2>Now we need to apply a spatial filter to only select points in California</h2>
 <pre class="r"><code>in2 &lt;- electric[cali,] # This filters for points inside of the california shape file</code></pre>
-<p>test_text</p>
 </div>
-<div id="make-a-good-ole-ggplot-map" class="section level2">
-<h2>Make a good ole ggplot map</h2>
+<div id="make-a-classic-ggplot-map" class="section level2">
+<h2>Make a classic ggplot map</h2>
 <pre class="r"><code>map &lt;- ggplot(in2)+
   geom_sf(data = cali,
           fill = &quot;grey30&quot;,
@@ -155,7 +154,8 @@ electric &lt;- df %&gt;% filter(fuel_type_code == &quot;ELEC&quot;) %&gt;%
 <pre class="r"><code>map + transition_states(year)+
   labs(title = &quot;Gas Stations With Electric Fueling Options {closest_state}&quot;)+
   shadow_mark(past = TRUE, alpha = .5) +
-  ease_aes(&#39;cubic-in-out&#39;)</code></pre>
+  enter_grow() +
+  enter_fade()</code></pre>
 <p><img src="../../../../post/2019-11-03-mapping-alternative-fuel-station-locations_files/figure-html/unnamed-chunk-5-1.gif" /><!-- --></p>
 </div>
 </div>

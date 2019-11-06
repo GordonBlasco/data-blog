@@ -49,9 +49,9 @@ electric <- df %>% filter(fuel_type_code == "ELEC") %>%
 in2 <- electric[cali,] # This filters for points inside of the california shape file
   
 ```
-test_text
 
-## Make a good ole ggplot map
+
+## Make a classic ggplot map
 ```{r}
 map <- ggplot(in2)+
   geom_sf(data = cali,
@@ -75,7 +75,8 @@ map
 map + transition_states(year)+
   labs(title = "Gas Stations With Electric Fueling Options {closest_state}")+
   shadow_mark(past = TRUE, alpha = .5) +
-  ease_aes('cubic-in-out')
+  enter_grow() +
+  enter_fade()
 
 ```
 

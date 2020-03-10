@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>G</copyright>
-    <lastBuildDate>Sun, 03 Nov 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 08 Mar 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Intro to Networks </title>
+      <link>/2020/03/08/2020-03-08-intro-to-networks/</link>
+      <pubDate>Sun, 08 Mar 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/2020/03/08/2020-03-08-intro-to-networks/</guid>
+      <description>Libraries needed: library(tidygraph) # Network manipulation library(magrittr) # Data wrangling library(tidyverse) # Data wrangling library(ggraph) # Static network plotting library(patchwork) # Arrainging satic plots library(networkD3) # Interactive network plotting  Lets make a simple graph! from &amp;lt;- c(1, 1, 2, 3, 4, 5) to &amp;lt;- c(2, 3, 4, 4 ,5, 6) # combine the from and to vectors into a simple dataframe basic &amp;lt;- tibble(from, to) # easily plot the edge list interactivly networkD3::simpleNetwork(basic)  {&#34;</description>
+    </item>
     
     <item>
       <title>Mapping Alternative Fuel Station Locations</title>
@@ -46,7 +55,7 @@ df &amp;lt;- read_csv(&amp;#39;https://data.ca.gov/dataset/d2136de9-4b98-49f5-b0
       <pubDate>Fri, 03 Apr 2015 02:13:50 +0000</pubDate>
       
       <guid>/page/about/</guid>
-      <description>About Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean nec dolor in magna lobortis egestas. Suspendisse eu erat tempor, tristique neque eu, convallis nulla. Curabitur vel bibendum lacus, at semper mauris. Suspendisse aliquet commodo ex, sed sagittis metus aliquam id. Maecenas feugiat rutrum lorem vel imperdiet. Nullam ornare lectus ut enim finibus, et porttitor mi tincidunt. Aenean lacinia, leo quis vehicula eleifend, quam libero sagittis erat, at euismod augue mauris et sapien.</description>
+      <description>The Point of this Blog Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean nec dolor in magna lobortis egestas. Suspendisse eu erat tempor, tristique neque eu, convallis nulla. Curabitur vel bibendum lacus, at semper mauris. Suspendisse aliquet commodo ex, sed sagittis metus aliquam id. Maecenas feugiat rutrum lorem vel imperdiet. Nullam ornare lectus ut enim finibus, et porttitor mi tincidunt. Aenean lacinia, leo quis vehicula eleifend, quam libero sagittis erat, at euismod augue mauris et sapien.</description>
     </item>
     
     <item>

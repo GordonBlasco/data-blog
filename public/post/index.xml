@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>G</copyright>
-    <lastBuildDate>Sun, 03 Nov 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 08 Mar 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Intro to Networks </title>
+      <link>/2020/03/08/2020-03-08-intro-to-networks/</link>
+      <pubDate>Sun, 08 Mar 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/2020/03/08/2020-03-08-intro-to-networks/</guid>
+      <description>Libraries needed: library(tidygraph) # Network manipulation library(magrittr) # Data wrangling library(tidyverse) # Data wrangling library(ggraph) # Static network plotting library(patchwork) # Arrainging satic plots library(networkD3) # Interactive network plotting  Lets make a simple graph! from &amp;lt;- c(1, 1, 2, 3, 4, 5) to &amp;lt;- c(2, 3, 4, 4 ,5, 6) # combine the from and to vectors into a simple dataframe basic &amp;lt;- tibble(from, to) # easily plot the edge list interactivly networkD3::simpleNetwork(basic)  {&#34;</description>
+    </item>
     
     <item>
       <title>Mapping Alternative Fuel Station Locations</title>

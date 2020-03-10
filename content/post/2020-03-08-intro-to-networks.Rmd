@@ -1,0 +1,213 @@
+---
+title: 'Intro to Networks '
+author: G
+date: '2020-03-08'
+slug: intro-to-networks
+categories: []
+tags: []
+description: ''
+---
+
+```{r setup, include=FALSE, fig.align='center'}
+#knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Libraries needed:
+```{r message=FALSE, warning=FALSE}
+library(tidygraph) # Network manipulation
+library(magrittr)  # Data wrangling
+library(tidyverse) # Data wrangling
+library(ggraph)    # Static network plotting
+library(patchwork) # Arrainging satic plots
+library(networkD3) # Interactive network plotting
+```
+
+
+# Lets make a simple graph!
+```{r warning=FALSE}
+
+from  <- c(1, 1, 2, 3, 4, 5)
+
+to    <- c(2, 3, 4, 4 ,5, 6)
+
+# combine the from and to vectors into a simple dataframe
+basic <- tibble(from, to)
+
+# easily plot the edge list interactivly
+networkD3::simpleNetwork(basic)
+```
+
+
+
+
+# Converting the edge data frame 
+In order to convert the dataframe we use `tidygraph::as_tbl_graph()`. This will convert our simple edge list into a tidygraph object.
+```{r messages = FALSE}
+tidy_basic <- basic %>% 
+  as_tbl_graph()
+```
+
+The tidygraph object is two dataframes connected the nodes (each point) and edge (each connection).
+```{r messages = FALSE, echo=FALSE}
+tidy_basic
+```
+
+
+In order to manipulate the tbl_graph we need to tell R which of the two data frames we want to opperate on. This is done with `activate(nodes)` or `activate(edges)`. Here we will name each node with a letter, and give each edge a random amount of transparency. 
+```{r messages = FALSE}
+tidy_basic_manipulated <- tidy_basic %>% 
+  activate(nodes) %>%              # tell tidygraph we want to work on the modes dataframe
+  mutate(id = letters[1:6]) %>%    # adding an id column for each node a - f
+  activate(edges) %>%              # tell tidygraph we want to work on the edge dataframe
+  mutate(alpha = runif(6, min = 0, max = 1)) # give each edge a random transparency value
+```
+Let's look at the columns we added to the plot.
+```{r messages = FALSE, echo=FALSE}
+tidy_basic_manipulated
+```
+
+Some quick plotting using ggraph. We will delve into this a bit more later. We need to specify the layout, and we need to give both the nodes and edges a `geom`.
+```{r messages = FALSE}
+ggraph(tidy_basic_manipulated, layout = 'sugiyama')+
+  geom_edge_link  (aes(alpha = alpha)) +
+  geom_node_point (aes(color = id)) + 
+  geom_node_text  (aes(label = id), repel = TRUE)
+
+```
+Great we created a simple edge list, made it into a tidy graph object, manipulated it, then plotted it. Next we will step up the complexity but still 
+
+# A slightly more complex example
+Lets look a the highschool dataset from `ggraph`. Now this data has a yearly component, we'll get to that part but for now lets stick to one year for simplicity.  
+```{r}
+hs_tidy <- highschool %>% 
+  filter(year == 1957) %>% # remove the time component for this example
+  select(-year) %>% 
+  as_tbl_graph()
+```
+
+And lets plot it real quick.
+```{r}
+ggraph(hs_tidy, layout = "stress") +
+  geom_node_point() +
+  geom_edge_link()
+```
+
+
+
+Now that we have the data into tidygraph's tbl_graph object we can easily calculate many statistical measures for each node edge easily combining `activate()` and `mutate()`. There are quite a few centrality measures a full list can be found [HERE](https://rdrr.io/cran/tidygraph/man/centrality.html). Thankfully tidygraph gives us nice clean wrappers for all the centrality measures created in `igraph`.
+```{r}
+hs_manipulated <- hs_tidy %>% 
+  activate(nodes) %>% 
+  mutate(  
+    # calculate various centrality measures
+    central_alpha  = centrality_alpha(), 
+    central_degree = centrality_degree(),
+    # calculate various grouping/clustering measures
+    components     = as.factor(group_components()), 
+    walktrap       = as.factor(group_walktrap()) 
+  ) %>%    
+  activate(edges) %>% 
+  mutate(  # calculate edge centrality
+    weight =  centrality_edge_betweenness()
+  )
+```
+
+Let's take a look at our new metrics
+```{r messages = FALSE, echo=FALSE}
+hs_manipulated %>% activate(nodes)
+```
+
+
+Let's plot it and specify aesthetics based off the metrics we calculated.
+```{r}
+ggraph(hs_manipulated, layout = 'stress') +
+  geom_node_point(aes(color = walktrap,
+                      size = central_alpha)) +
+  geom_edge_link (aes(alpha = weight))
+
+```
+
+
+Now 
+
+```{r}
+a <- ggraph(hs_manipulated, layout = "kk") +
+  geom_node_point(aes(color = components)) +
+  labs(title = "Layout stays the same",
+       subtitle = "Nodes don't move")
+
+b <- ggraph(hs_manipulated, layout = "kk") +
+  geom_node_point(aes(color = components)) +
+  geom_edge_link()
+  
+
+c <- ggraph(hs_manipulated, layout = "kk") +
+  geom_node_point(aes(color = components)) + 
+  geom_edge_hive()
+
+
+d <- ggraph(hs_manipulated, layout = "linear") +
+  geom_node_point(aes(color = components)) +
+  geom_edge_arc() +
+  labs(title = "Change in layout",
+       subtitle = "Move the nodes")
+
+e <- ggraph(hs_manipulated, layout = "linear", circular = TRUE) +
+  geom_node_point(aes(color = components)) +
+  geom_edge_arc()
+  
+
+f <- ggraph(hs_manipulated, layout = "mds") +
+  geom_node_point(aes(color = components)) + 
+  geom_edge_link()
+
+
+# laying out the plots with patchwork
+plots_compared <- ((a/b/c) | (d/e/f)) +
+  plot_layout(guides = 'collect')
+
+
+plots_compared
+```
+
+
+
+# Use networkD3 to make a more detailed plot
+
+So, unfortunatly Networkd3 does not play nicley direcly with tidygraph so we need to do some conversions. First we need to convert our tidygraph object to a network d3 object using `igraph_to_networkD3()`. In order to specify the group each nodes belongs in we need to extract a named vector to specify the `group =` argument. Then we need to create our Javascript color scale. 
+```{r warning=FALSE, messages = FALSE}
+group_information <- hs_manipulated %>% 
+  activate(nodes) %>% 
+  as_tibble() 
+
+node_vec <- as.numeric(group_information[["name"]])
+group_vec <- as.numeric(group_information[["components"]])
+
+
+group_info <- set_names(x = group_vec, nm = node_vec)
+
+# Convert igraph to list for networkD3
+d3_object <- igraph_to_networkD3(hs_manipulated, group = group_info)
+
+# Set the colors for d3 orange and blue for now
+ColourScale <- 'd3.scaleOrdinal()
+            .domain(["1", "2"])
+           .range(["#FF6900", "#89cff0"]);'
+
+
+
+# Plot as a forceDirected Network
+forceNetwork(Links = d3_object$links, 
+             Nodes = d3_object$nodes, 
+             Source = 'source',
+             Target = 'target', 
+             NodeID = 'name', 
+             Group = 'group',
+             colourScale = JS(ColourScale),
+             zoom = TRUE)
+
+```
+
+
+
+

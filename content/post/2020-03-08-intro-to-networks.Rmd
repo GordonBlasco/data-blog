@@ -124,9 +124,9 @@ hs_manipulated %>% activate(nodes)
 Let's plot it and specify aesthetics based off the metrics we calculated.
 ```{r}
 ggraph(hs_manipulated, layout = 'stress') +
+  geom_edge_link (aes(alpha = weight)) +
   geom_node_point(aes(color = walktrap,
-                      size = central_alpha)) +
-  geom_edge_link (aes(alpha = weight))
+                      size = central_alpha)) 
 
 ```
 

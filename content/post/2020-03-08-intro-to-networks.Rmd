@@ -24,21 +24,24 @@ library(networkD3) # Interactive network plotting
 
 
 # Lets make a simple graph!
+Making networks is way easier than it sounds. We can start with two simple vectors of equal length and bind them into a dataframe of two columns.
 ```{r warning=FALSE}
-
 from  <- c(1, 1, 2, 3, 4, 5)
 
 to    <- c(2, 3, 4, 4 ,5, 6)
 
 # combine the from and to vectors into a simple dataframe
 basic <- tibble(from, to)
-
-# easily plot the edge list interactivly
+```
+So what we have is an edge list that says "there is a connection from node 1 to node 2, anther from node one to node 3." And on and on... 
+```{r echo=FALSE}
+basic
+```
+Now lets use networkD3's `simpleNetwork()` function in order quickly make an interactive plot. The nice thing about this function is that it only requires an edge list. There is no wrangling needed. Go on, click and drag a node!
+```{r warning=FALSE}
 networkD3::simpleNetwork(basic)
 ```
-
-
-
+This an awesome function, but the functionality and customization is a bit limited. We will use another function from this package to leverage more customization later on in the post. 
 
 # Converting the edge data frame 
 In order to convert the dataframe we use `tidygraph::as_tbl_graph()`. This will convert our simple edge list into a tidygraph object.
@@ -47,13 +50,13 @@ tidy_basic <- basic %>%
   as_tbl_graph()
 ```
 
-The tidygraph object is two dataframes connected the nodes (each point) and edge (each connection).
+The tidygraph object is two dataframes connected. The nodes (each point) and edge (each connection).
 ```{r messages = FALSE, echo=FALSE}
 tidy_basic
 ```
 
 
-In order to manipulate the tbl_graph we need to tell R which of the two data frames we want to opperate on. This is done with `activate(nodes)` or `activate(edges)`. Here we will name each node with a letter, and give each edge a random amount of transparency. 
+In order to manipulate the tbl_graph we need to tell R which of the two data frames we want to operate on. This is done with `activate(nodes)` or `activate(edges)`. Here we will name each node with a letter, and give each edge a random amount of transparency. 
 ```{r messages = FALSE}
 tidy_basic_manipulated <- tidy_basic %>% 
   activate(nodes) %>%              # tell tidygraph we want to work on the modes dataframe
@@ -128,7 +131,7 @@ ggraph(hs_manipulated, layout = 'stress') +
 ```
 
 
-Now 
+Now lets play around a bit with some of the functionality of ggraph. This package is made to behave a lot like ggplot2. However, one key difference is the layout argument. These tell ggraph what algorithm to use when laying out the nodes. You can really go as deep as you want down this rabbit hole if you want to start playing around the with the parameters of the layout look at the [particles package](https://cran.r-project.org/web/packages/particles/vignettes/intro.html). Or, you can just do what I do and choose random ones until you get one you like.
 
 ```{r}
 a <- ggraph(hs_manipulated, layout = "kk") +
@@ -137,29 +140,29 @@ a <- ggraph(hs_manipulated, layout = "kk") +
        subtitle = "Nodes don't move")
 
 b <- ggraph(hs_manipulated, layout = "kk") +
-  geom_node_point(aes(color = components)) +
-  geom_edge_link()
+  geom_edge_link() +
+  geom_node_point(aes(color = components)) 
   
 
 c <- ggraph(hs_manipulated, layout = "kk") +
-  geom_node_point(aes(color = components)) + 
-  geom_edge_hive()
+  geom_edge_hive() +
+  geom_node_point(aes(color = components)) 
 
 
 d <- ggraph(hs_manipulated, layout = "linear") +
-  geom_node_point(aes(color = components)) +
   geom_edge_arc() +
+  geom_node_point(aes(color = components)) +
   labs(title = "Change in layout",
        subtitle = "Move the nodes")
 
 e <- ggraph(hs_manipulated, layout = "linear", circular = TRUE) +
-  geom_node_point(aes(color = components)) +
-  geom_edge_arc()
+  geom_edge_arc() +
+  geom_node_point(aes(color = components)) 
   
 
 f <- ggraph(hs_manipulated, layout = "mds") +
-  geom_node_point(aes(color = components)) + 
-  geom_edge_link()
+  geom_edge_link() +
+  geom_node_point(aes(color = components)) 
 
 
 # laying out the plots with patchwork
@@ -174,7 +177,7 @@ plots_compared
 
 # Use networkD3 to make a more detailed plot
 
-So, unfortunatly Networkd3 does not play nicley direcly with tidygraph so we need to do some conversions. First we need to convert our tidygraph object to a network d3 object using `igraph_to_networkD3()`. In order to specify the group each nodes belongs in we need to extract a named vector to specify the `group =` argument. Then we need to create our Javascript color scale. 
+So, unfortunately NetworkD3 does not play nicely directly with tidygraph so we need to do some finagling. First we need to convert our tidygraph object to a network d3 object using `igraph_to_networkD3()`. In order to specify the group each nodes belongs in we need to extract a named vector to specify the `group =` argument. Then we need to create our JavaScript color scale. 
 ```{r warning=FALSE, messages = FALSE}
 group_information <- hs_manipulated %>% 
   activate(nodes) %>% 

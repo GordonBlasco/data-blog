@@ -1,21 +1,19 @@
 ---
-title: 'A Brief Introduction to Network Analysis with Tidygraph'
+title: 'A Brief Introduction to Network Analysis with R'
 author: G
 date: '2020-03-08'
 slug: intro-to-networks
 categories: ["networks"]
 tags: ["rstats", "network analysis", "tidygraph"]
-description: 'An introduction to networks in R using the tidygraph, ggraph, and networkD3 packages'
+description: 'Using the tidygraph, ggraph, and networkD3 packages'
 ---
 
 ```{r setup, include=FALSE, fig.align='center'}
 #knitr::opts_chunk$set(echo = TRUE)
 ```
-In this post I will you walk through the basics of working with network objects in R. We will first create a simple network as an example, manipulate it using tidygraph's very clean framework, and then do some simple plotting using ggraph and networkD3. Then we will step it up a bit and use some larger data and calculate some network metrics. 
+In this post I will you walk through the basics of working with network objects in R. We will first create a simple network as an example, manipulate it using tidygraph's very clean framework, and then do some simple plotting using ggraph and networkD3. Then we will step it up a bit with a larger dataset and calculate some network metrics. 
 
-My goal for this post is to show you how easily the simple manipulation steps from the simple example transfer over to the more complex, and allow us to simply carry out a lot of complex calculations with very little code.  
-
-If you are familiar with the tidyverese's dplyr and ggplot packages you will be right at home using the tidygraph. 
+My goal for this post is to show you how the manipulation steps from the simple example transfer over to the more complex one. And how these packages allow you to easily carry out a lot of complex calculations with very little code.  
 
 # Libraries needed:
 ```{r message=FALSE, warning=FALSE}
@@ -23,7 +21,7 @@ library(tidygraph) # Network manipulation
 library(magrittr)  # Data wrangling
 library(tidyverse) # Data wrangling
 library(ggraph)    # Static network plotting
-library(patchwork) # Arrainging satic plots
+library(patchwork) # Arrainging plots
 library(networkD3) # Interactive network plotting
 ```
 
@@ -35,7 +33,7 @@ from  <- c(1, 1, 2, 3, 4, 5)
 
 to    <- c(2, 3, 4, 4 ,5, 6)
 
-# combine the from and to vectors into a simple dataframe
+# combine the from and to vectors into a simple dataframe 
 basic <- tibble(from, to)
 ```
 So what we have is what is called an "edge list" which is essentially a dataframe that says "there is a connection from node 1 to node 2, anther from node 1 to node 3." And on and on... 

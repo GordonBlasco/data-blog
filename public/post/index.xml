@@ -13,13 +13,13 @@
     
     
     <item>
-      <title>Intro to Networks </title>
+      <title>A Brief Introduction to Network Analysis with Tidygraph</title>
       <link>/2020/03/08/2020-03-08-intro-to-networks/</link>
       <pubDate>Sun, 08 Mar 2020 00:00:00 +0000</pubDate>
       
       <guid>/2020/03/08/2020-03-08-intro-to-networks/</guid>
-      <description>Libraries needed: library(tidygraph) # Network manipulation library(magrittr) # Data wrangling library(tidyverse) # Data wrangling library(ggraph) # Static network plotting library(patchwork) # Arrainging satic plots library(networkD3) # Interactive network plotting  Lets make a simple graph! Making networks is way easier than it sounds. We can start with two simple vectors of equal length and bind them into a dataframe of two columns.
-from &amp;lt;- c(1, 1, 2, 3, 4, 5) to &amp;lt;- c(2, 3, 4, 4 ,5, 6) # combine the from and to vectors into a simple dataframe basic &amp;lt;- tibble(from, to) So what we have is an edge list that says “there is a connection from node 1 to node 2, anther from node one to node 3.</description>
+      <description>In this post I will you walk through the basics of working with network objects in R. We will first create a simple network as an example, manipulate it using tidygraph’s very clean framework, and then do some simple plotting using ggraph and networkD3. Then we will step it up a bit and use some larger data and calculate some network metrics.
+My goal for this post is to show you how easily the simple manipulation steps from the simple example transfer over to the more complex, and allow us to simply carry out a lot of complex calculations with very little code.</description>
     </item>
     
     <item>

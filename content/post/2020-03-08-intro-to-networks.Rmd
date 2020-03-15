@@ -1,16 +1,21 @@
 ---
-title: 'Intro to Networks '
+title: 'A Brief Introduction to Network Analysis with Tidygraph'
 author: G
 date: '2020-03-08'
 slug: intro-to-networks
-categories: []
-tags: []
-description: ''
+categories: ["networks"]
+tags: ["rstats", "network analysis", "tidygraph"]
+description: 'An introduction to networks in R using the tidygraph, ggraph, and networkD3 packages'
 ---
 
 ```{r setup, include=FALSE, fig.align='center'}
 #knitr::opts_chunk$set(echo = TRUE)
 ```
+In this post I will you walk through the basics of working with network objects in R. We will first create a simple network as an example, manipulate it using tidygraph's very clean framework, and then do some simple plotting using ggraph and networkD3. Then we will step it up a bit and use some larger data and calculate some network metrics. 
+
+My goal for this post is to show you how easily the simple manipulation steps from the simple example transfer over to the more complex, and allow us to simply carry out a lot of complex calculations with very little code.  
+
+If you are familiar with the tidyverese's dplyr and ggplot packages you will be right at home using the tidygraph. 
 
 # Libraries needed:
 ```{r message=FALSE, warning=FALSE}
@@ -24,7 +29,7 @@ library(networkD3) # Interactive network plotting
 
 
 # Lets make a simple graph!
-Making networks is way easier than it sounds. We can start with two simple vectors of equal length and bind them into a dataframe of two columns.
+Making networks is way easier than it sounds. All it takes is two simple vectors of equal length, then just bind them into a dataframe. 
 ```{r warning=FALSE}
 from  <- c(1, 1, 2, 3, 4, 5)
 
@@ -33,30 +38,31 @@ to    <- c(2, 3, 4, 4 ,5, 6)
 # combine the from and to vectors into a simple dataframe
 basic <- tibble(from, to)
 ```
-So what we have is an edge list that says "there is a connection from node 1 to node 2, anther from node one to node 3." And on and on... 
+So what we have is what is called an "edge list" which is essentially a dataframe that says "there is a connection from node 1 to node 2, anther from node 1 to node 3." And on and on... 
 ```{r echo=FALSE}
 basic
 ```
-Now lets use networkD3's `simpleNetwork()` function in order quickly make an interactive plot. The nice thing about this function is that it only requires an edge list. There is no wrangling needed. Go on, click and drag a node!
+Now lets use networkD3's `simpleNetwork()` function to quickly make an interactive plot so we can visualize our simple network. The nice thing about this function is that it only requires an edge list. There is no wrangling needed. Go on, click and drag a node!
 ```{r warning=FALSE}
 networkD3::simpleNetwork(basic)
 ```
-This an awesome function, but the functionality and customization is a bit limited. We will use another function from this package to leverage more customization later on in the post. 
+This an awesome function, but the functionality and customization is a bit limited. We will use another function from this package to leverage more customization for our visualization later on in the post. 
 
-# Converting the edge data frame 
-In order to convert the dataframe we use `tidygraph::as_tbl_graph()`. This will convert our simple edge list into a tidygraph object.
+# Converting the edge list to a tidygraph object.  
+In order to convert the edge list into a tidygraph object we use `tidygraph::as_tbl_graph()`.
 ```{r messages = FALSE}
 tidy_basic <- basic %>% 
   as_tbl_graph()
 ```
 
-The tidygraph object is two dataframes connected. The nodes (each point) and edge (each connection).
+# What is a tidygraph object? 
+The tidygraph object is two dataframes connected. The nodes (each point) and edge (each connection) and it can operate the same as an igraph object. It makes your data very readable, but also allows it to function in the world of igraph. 
 ```{r messages = FALSE, echo=FALSE}
 tidy_basic
 ```
 
 
-In order to manipulate the tbl_graph we need to tell R which of the two data frames we want to operate on. This is done with `activate(nodes)` or `activate(edges)`. Here we will name each node with a letter, and give each edge a random amount of transparency. 
+In order to manipulate the `tbl_graph` we need to tell R which of the two data frames we want to operate on. This is done with `activate(nodes)` or `activate(edges)`. I will show how we would name each node with a letter, and give each edge a random amount of transparency. Note the activate call between the operations. 
 ```{r messages = FALSE}
 tidy_basic_manipulated <- tidy_basic %>% 
   activate(nodes) %>%              # tell tidygraph we want to work on the modes dataframe
@@ -64,31 +70,33 @@ tidy_basic_manipulated <- tidy_basic %>%
   activate(edges) %>%              # tell tidygraph we want to work on the edge dataframe
   mutate(alpha = runif(6, min = 0, max = 1)) # give each edge a random transparency value
 ```
-Let's look at the columns we added to the plot.
+Now let's take a quick look at the columns we added to the plot. We can see the new alpha column added to the edges, and the id column added to the nodes. Also because the edges were the last thing I activated they are still active here. 
 ```{r messages = FALSE, echo=FALSE}
 tidy_basic_manipulated
 ```
 
-Some quick plotting using ggraph. We will delve into this a bit more later. We need to specify the layout, and we need to give both the nodes and edges a `geom`.
+
+#Some quick plotting using ggraph. 
+We will delve into this a bit more later so for now lets make a basic plot. In order to use ggraph we need to specify the layout, (I will explain this later) and we need to give both the nodes and edges a `geom_`.
 ```{r messages = FALSE}
 ggraph(tidy_basic_manipulated, layout = 'sugiyama')+
-  geom_edge_link  (aes(alpha = alpha)) +
-  geom_node_point (aes(color = id)) + 
-  geom_node_text  (aes(label = id), repel = TRUE)
+  geom_edge_link  (aes(alpha = alpha)) +          # plot the links between nodes
+  geom_node_point (aes(color = id)) +             # add color to the nodes
+  geom_node_text  (aes(label = id), repel = TRUE) # add the names of each node as a label
 
 ```
-Great we created a simple edge list, made it into a tidy graph object, manipulated it, then plotted it. Next we will step up the complexity but still 
+Super! We created a simple edge list, made it into a tidy graph object, manipulated it, then plotted it. Next we will step up the complexity with a bigger dataframe and by using some network analysis calculations. I hope I can prove that it is about as simple as what we just did. 
 
 # A slightly more complex example
-Lets look a the highschool dataset from `ggraph`. Now this data has a yearly component, we'll get to that part but for now lets stick to one year for simplicity.  
+Lets look a the highschool dataset from `ggraph`. Now this data has a yearly component, we'll get to that part but for now lets stick to one year for simplicity. 
 ```{r}
 hs_tidy <- highschool %>% 
   filter(year == 1957) %>% # remove the time component for this example
   select(-year) %>% 
-  as_tbl_graph()
+  as_tbl_graph() # turn the edge list into a tbl_graph
 ```
 
-And lets plot it real quick.
+And lets plot it real quick so we know what we are dealing with. 
 ```{r}
 ggraph(hs_tidy, layout = "stress") +
   geom_node_point() +
@@ -96,8 +104,7 @@ ggraph(hs_tidy, layout = "stress") +
 ```
 
 
-
-Now that we have the data into tidygraph's tbl_graph object we can easily calculate many statistical measures for each node edge easily combining `activate()` and `mutate()`. There are quite a few centrality measures a full list can be found [HERE](https://rdrr.io/cran/tidygraph/man/centrality.html). Thankfully tidygraph gives us nice clean wrappers for all the centrality measures created in `igraph`.
+Now that we have our data into tidygraph's tbl_graph object we can easily calculate many statistical measures for each node edge easily combining `activate()` and `mutate()`. There are quite a few centrality measures from igraph and all are fully supported with tidygraph, a full list can be found [HERE](https://rdrr.io/cran/tidygraph/man/centrality.html).
 ```{r}
 hs_manipulated <- hs_tidy %>% 
   activate(nodes) %>% 
@@ -105,9 +112,11 @@ hs_manipulated <- hs_tidy %>%
     # calculate various centrality measures
     central_alpha  = centrality_alpha(), 
     central_degree = centrality_degree(),
+    
     # calculate various grouping/clustering measures
     components     = as.factor(group_components()), 
     walktrap       = as.factor(group_walktrap()) 
+    
   ) %>%    
   activate(edges) %>% 
   mutate(  # calculate edge centrality
@@ -131,7 +140,9 @@ ggraph(hs_manipulated, layout = 'stress') +
 ```
 
 
-Now lets play around a bit with some of the functionality of ggraph. This package is made to behave a lot like ggplot2. However, one key difference is the layout argument. These tell ggraph what algorithm to use when laying out the nodes. You can really go as deep as you want down this rabbit hole if you want to start playing around the with the parameters of the layout look at the [particles package](https://cran.r-project.org/web/packages/particles/vignettes/intro.html). Or, you can just do what I do and choose random ones until you get one you like.
+Now lets play around a bit with some of the functionality of ggraph. This package is made to behave a lot like ggplot2. However, one key difference is the layout argument. This tells ggraph what algorithm to use when laying out the nodes. You can really deep down this rabbit hole. If you want to you can start creating your own layouts with the [particles package](https://cran.r-project.org/web/packages/particles/vignettes/intro.html). 
+
+Or, you can just do what I do and choose random ones until you get one you like.
 
 ```{r}
 a <- ggraph(hs_manipulated, layout = "kk") +
@@ -167,39 +178,43 @@ f <- ggraph(hs_manipulated, layout = "mds") +
 
 # laying out the plots with patchwork
 plots_compared <- ((a/b/c) | (d/e/f)) +
-  plot_layout(guides = 'collect')
+  plot_layout(guides = 'collect')  +  
+  plot_annotation(tag_levels = 'a')
 
-
-plots_compared
+plots_compared 
 ```
 
-
+Now that you have mastered static plotting, lets take another look at the interactive plotting we can do with networkD3
 
 # Use networkD3 to make a more detailed plot
 
-So, unfortunately NetworkD3 does not play nicely directly with tidygraph so we need to do some finagling. First we need to convert our tidygraph object to a network d3 object using `igraph_to_networkD3()`. In order to specify the group each nodes belongs in we need to extract a named vector to specify the `group =` argument. Then we need to create our JavaScript color scale. 
+So, unfortunately networkD3 does not play nicely directly with tidygraph so we need to do some finagling. First we need to convert our tidygraph object to a network d3 object using `igraph_to_networkD3()`. In order to specify the group each nodes belongs in we need to extract a named vector to specify the `group` argument. Then we need to create our JavaScript color scale. 
 ```{r warning=FALSE, messages = FALSE}
+# 1. Make the named vector that specifies which group each node belongs to
+
+## extract our nodes from tidygraph as a data frame
 group_information <- hs_manipulated %>% 
   activate(nodes) %>% 
   as_tibble() 
 
+## create a named vector with node names and the group they belong to
 node_vec <- as.numeric(group_information[["name"]])
 group_vec <- as.numeric(group_information[["components"]])
 
-
 group_info <- set_names(x = group_vec, nm = node_vec)
 
-# Convert igraph to list for networkD3
+# 2. Convert igraph to list for networkD3
 d3_object <- igraph_to_networkD3(hs_manipulated, group = group_info)
 
-# Set the colors for d3 orange and blue for now
+
+# 3. Set the colors for d3 orange and blue for now
 ColourScale <- 'd3.scaleOrdinal()
             .domain(["1", "2"])
            .range(["#FF6900", "#89cff0"]);'
 
 
 
-# Plot as a forceDirected Network
+# 4. Plot as a forceDirected Network
 forceNetwork(Links = d3_object$links, 
              Nodes = d3_object$nodes, 
              Source = 'source',
@@ -212,5 +227,4 @@ forceNetwork(Links = d3_object$links,
 ```
 
 
-
-
+We will leave it there for now.

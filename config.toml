@@ -3,8 +3,8 @@ title = "The Joy of Analysis"
 theme = "ghostwriter"
 languageCode = "en-us"
 copyright = "G"
-disqusShortname = "XXX"
-googleAnalytics = "XXX"
+#disqusShortname = "XXX"
+#googleAnalytics = "XXX"
 ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
 [Privacy]
 
@@ -17,7 +17,7 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
     useSessionStorage = false
 
 [Author]
-    name = "My Name"
+    name = "G"
     profile = "https://google.com/+XXX"
 
 [Taxonomies]
@@ -27,7 +27,7 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
     mainSections = ["post"]
     intro = true
     headline = "The Joy of Analysis"
-    description = ""
+    #description = ""
     #github = "https://github.com/XXX"
     #gitlab = "https://gitlab.com/XXX"
     #linkedin = "https://linkedin.com/in/XXX/"
@@ -36,10 +36,10 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
     #stackoverflow = "https://stackoverflow.com/users/XXX/YYY"
     #facebook = "https://www.facebook.com/username"
     #email = "XXX@example.com"
-    opengraph = true
+    opengraph = false
     shareTwitter = false
-    shareFacebook = true
-    shareGooglePlus = true
+    shareFacebook = false
+    shareGooglePlus = false
     shareLinkedIn = false
     dateFormat = "Mon, Jan 2, 2006"
     highlightJsUrl = ""

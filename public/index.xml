@@ -18,8 +18,8 @@
       <pubDate>Sun, 08 Mar 2020 00:00:00 +0000</pubDate>
       
       <guid>/2020/03/08/2020-03-08-intro-to-networks/</guid>
-      <description>In this post I will you walk through the basics of working with network objects in R. We will first create a simple network as an example, manipulate it using tidygraph’s very clean framework, and then do some simple plotting using ggraph and networkD3. Then we will step it up a bit with a larger dataset and calculate some network metrics.
-My goal for this post is to show you how the manipulation steps from the simple example transfer over to the more complex one.</description>
+      <description>In this post I will walk you through the basics of working with network objects in R. First we’ll create a simple network from scratch, manipulate it using tidygraph’s very clean framework, and then do some simple plotting using ggraph and networkD3. After that we will step it up a bit with a larger dataset to calculate some network metrics.
+My goal for this post is to show how the basic manipulation steps from the simple example can also be used on much more intense data to easily allow us to carry out a lot of complex calculations with very little code.</description>
     </item>
     
     <item>
@@ -42,21 +42,12 @@ df &amp;lt;- read_csv(&amp;#39;https://data.ca.gov/dataset/d2136de9-4b98-49f5-b0
     </item>
     
     <item>
-      <title>tidytuesday - powerlifting</title>
-      <link>/2019/10/14/2019-10-14-tidytuesday-powerlifting/</link>
-      <pubDate>Mon, 14 Oct 2019 00:00:00 +0000</pubDate>
-      
-      <guid>/2019/10/14/2019-10-14-tidytuesday-powerlifting/</guid>
-      <description> library(tidyverse) ggplot(mtcars, aes(x = mpg, y = hp))+ geom_point() + theme_classic() </description>
-    </item>
-    
-    <item>
       <title>About</title>
       <link>/page/about/</link>
       <pubDate>Fri, 03 Apr 2015 02:13:50 +0000</pubDate>
       
       <guid>/page/about/</guid>
-      <description>The Point of this Blog Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean nec dolor in magna lobortis egestas. Suspendisse eu erat tempor, tristique neque eu, convallis nulla. Curabitur vel bibendum lacus, at semper mauris. Suspendisse aliquet commodo ex, sed sagittis metus aliquam id. Maecenas feugiat rutrum lorem vel imperdiet. Nullam ornare lectus ut enim finibus, et porttitor mi tincidunt. Aenean lacinia, leo quis vehicula eleifend, quam libero sagittis erat, at euismod augue mauris et sapien.</description>
+      <description>The Point of this Blog tbd&amp;hellip;</description>
     </item>
     
     <item>

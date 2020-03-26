@@ -18,8 +18,8 @@
       <pubDate>Sun, 08 Mar 2020 00:00:00 +0000</pubDate>
       
       <guid>/2020/03/08/2020-03-08-intro-to-networks/</guid>
-      <description>In this post I will you walk through the basics of working with network objects in R. We will first create a simple network as an example, manipulate it using tidygraph’s very clean framework, and then do some simple plotting using ggraph and networkD3. Then we will step it up a bit with a larger dataset and calculate some network metrics.
-My goal for this post is to show you how the manipulation steps from the simple example transfer over to the more complex one.</description>
+      <description>In this post I will walk you through the basics of working with network objects in R. First we’ll create a simple network from scratch, manipulate it using tidygraph’s very clean framework, and then do some simple plotting using ggraph and networkD3. After that we will step it up a bit with a larger dataset to calculate some network metrics.
+My goal for this post is to show how the basic manipulation steps from the simple example can also be used on much more intense data to easily allow us to carry out a lot of complex calculations with very little code.</description>
     </item>
     
     <item>
@@ -39,15 +39,6 @@ df &amp;lt;- read_csv(&amp;#39;https://data.ca.gov/dataset/d2136de9-4b98-49f5-b0
       
       <guid>/2019/10/15/2019-10-15-tidytuesday-car-fuel-economy/</guid>
       <description> Load the packages and data! library(tidyverse) library(viridis) cars &amp;lt;- readr::read_csv(&amp;quot;https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-10-15/big_epa_cars.csv&amp;quot;)  Clean the data and plot it big_makers &amp;lt;- cars %&amp;gt;% select(make, model, year, UCity,UHighway) %&amp;gt;% group_by(make) %&amp;gt;% tally() %&amp;gt;% arrange(-n) %&amp;gt;% head(30) %&amp;gt;% pull(make) cars_clean &amp;lt;- cars %&amp;gt;% select(make, model, year, UCity,UHighway) %&amp;gt;% filter(make %in% big_makers) cars_heat &amp;lt;- cars_clean %&amp;gt;% group_by(make, year) %&amp;gt;% filter(!is.na(UCity)) %&amp;gt;% summarise( mean = mean(UCity) ) ggplot(cars_heat, aes(x= year, y= make))+ geom_tile(aes(fill = mean))+ scale_fill_viridis(option = &amp;quot;magma&amp;quot;)+ theme_classic()+ labs(title = &amp;quot;Cars yearly mean MPG&amp;quot;, x= &amp;quot;&amp;quot;, y = &amp;quot;&amp;quot;)+ guides(fill=guide_legend(title=&amp;quot;Mean City MPG&amp;quot;))  </description>
-    </item>
-    
-    <item>
-      <title>tidytuesday - powerlifting</title>
-      <link>/2019/10/14/2019-10-14-tidytuesday-powerlifting/</link>
-      <pubDate>Mon, 14 Oct 2019 00:00:00 +0000</pubDate>
-      
-      <guid>/2019/10/14/2019-10-14-tidytuesday-powerlifting/</guid>
-      <description> library(tidyverse) ggplot(mtcars, aes(x = mpg, y = hp))+ geom_point() + theme_classic() </description>
     </item>
     
   </channel>

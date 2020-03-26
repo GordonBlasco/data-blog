@@ -11,9 +11,9 @@ description: 'Using the tidygraph, ggraph, and networkD3 packages'
 ```{r setup, include=FALSE, fig.align='center'}
 #knitr::opts_chunk$set(echo = TRUE)
 ```
-In this post I will you walk through the basics of working with network objects in R. We will first create a simple network as an example, manipulate it using tidygraph's very clean framework, and then do some simple plotting using ggraph and networkD3. Then we will step it up a bit with a larger dataset and calculate some network metrics. 
+In this post I will walk you through the basics of working with network objects in R. First we'll create a simple network from scratch, manipulate it using tidygraph's very clean framework, and then do some simple plotting using ggraph and networkD3. After that we will step it up a bit with a larger dataset to calculate some network metrics. 
 
-My goal for this post is to show you how the manipulation steps from the simple example transfer over to the more complex one. And how these packages allow you to easily carry out a lot of complex calculations with very little code.  
+My goal for this post is to show how the basic manipulation steps from the simple example can also be used on much more intense data to easily allow us to carry out a lot of complex calculations with very little code. I would like to note all of this is possible because of the huge effort software developers have put into projects like `igraph`, `tidygraph`, `ggraph`, and `networkD3`.
 
 # Libraries needed:
 ```{r message=FALSE, warning=FALSE}
@@ -27,7 +27,7 @@ library(networkD3) # Interactive network plotting
 
 
 # Lets make a simple graph!
-Making networks is way easier than it sounds. All it takes is two simple vectors of equal length, then just bind them into a dataframe. 
+Making networks is much easier than it sounds. We can build one by combining two vectors of equal length. All it takes is two simple vectors of equal length, then just bind them into a dataframe. 
 ```{r warning=FALSE}
 from  <- c(1, 1, 2, 3, 4, 5)
 
@@ -36,15 +36,18 @@ to    <- c(2, 3, 4, 4 ,5, 6)
 # combine the from and to vectors into a simple dataframe 
 basic <- tibble(from, to)
 ```
-So what we have is what is called an "edge list" which is essentially a dataframe that says "there is a connection from node 1 to node 2, anther from node 1 to node 3." And on and on... 
+What we just made is called an "edge list" which is essentially a dataframe that says "there is a connection from node 1 to node 2, another from node 1 to node 3." And on and on... This is minimal unit for a network. We have our nodes (all the unique elements in our network 1, 2, 3, 4, 5, and 6) and the information of how they are connected (the order in which they appear in the data). 
+
+Nodes typically represent the "actors" of our network. They could be governmental entities, animals, corporations, anything really. If you squint hard enough there are networks to be found all around.
 ```{r echo=FALSE}
 basic
 ```
-Now lets use networkD3's `simpleNetwork()` function to quickly make an interactive plot so we can visualize our simple network. The nice thing about this function is that it only requires an edge list. There is no wrangling needed. Go on, click and drag a node!
+Now lets use networkD3's `simpleNetwork()` function to quickly make an interactive plot so we can visualize our simple network. The nice thing about this function is that it only requires an edge list. There is no data wrangling needed. Go on, click and drag a node!
 ```{r warning=FALSE}
 networkD3::simpleNetwork(basic)
 ```
-This an awesome function, but the functionality and customization is a bit limited. We will use another function from this package to leverage more customization for our visualization later on in the post. 
+
+This is an awesome function, but the customization is a bit limited. We will use another function from this package to increase the amount of customization for our visualization later on in the post. 
 
 # Converting the edge list to a tidygraph object.  
 In order to convert the edge list into a tidygraph object we use `tidygraph::as_tbl_graph()`.
@@ -54,13 +57,15 @@ tidy_basic <- basic %>%
 ```
 
 # What is a tidygraph object? 
-The tidygraph object is two dataframes connected. The nodes (each point) and edge (each connection) and it can operate the same as an igraph object. It makes your data very readable, but also allows it to function in the world of igraph. 
+The tidygraph object is two dataframes connected. The nodes dataframe (each point) and the edge dataframe (each connection). This structure very human readable and allows for easy inspection of our object. Look below at what is returned when we call the tidygraph object.
 ```{r messages = FALSE, echo=FALSE}
 tidy_basic
 ```
+Tidygraph is powerful because it is a thin wrapper around igraph, and igraph is very very powerful. Tidygraph allows us to use the easily readable code that we are use to from the tidyverse to manipulate igraph objects.
 
 
-In order to manipulate the `tbl_graph` we need to tell R which of the two data frames we want to operate on. This is done with `activate(nodes)` or `activate(edges)`. I will show how we would name each node with a letter, and give each edge a random amount of transparency. Note the activate call between the operations. 
+# Working with tidygraph
+In order to manipulate the `tbl_graph` we need to tell R which of the two data frames we want to operate on. This is done with `activate(nodes)` or `activate(edges)`. I will show how we would name each node, and give each edge a random amount of transparency. Note the activate call between the operations. 
 ```{r messages = FALSE}
 tidy_basic_manipulated <- tidy_basic %>% 
   activate(nodes) %>%              # tell tidygraph we want to work on the modes dataframe
@@ -74,7 +79,7 @@ tidy_basic_manipulated
 ```
 
 
-#Some quick plotting using ggraph. 
+# Some quick plotting using ggraph. 
 We will delve into this a bit more later so for now lets make a basic plot. In order to use ggraph we need to specify the layout, (I will explain this later) and we need to give both the nodes and edges a `geom_`.
 ```{r messages = FALSE}
 ggraph(tidy_basic_manipulated, layout = 'sugiyama')+
@@ -83,14 +88,14 @@ ggraph(tidy_basic_manipulated, layout = 'sugiyama')+
   geom_node_text  (aes(label = id), repel = TRUE) # add the names of each node as a label
 
 ```
-Super! We created a simple edge list, made it into a tidy graph object, manipulated it, then plotted it. Next we will step up the complexity with a bigger dataframe and by using some network analysis calculations. I hope I can prove that it is about as simple as what we just did. 
+Super! We created a simple edge list, made it into a tidy graph object, manipulated it, then plotted it. Next we will step up the complexity with a bigger dataframe and use some network analysis calculations. I hope I can prove to you that this is about as simple as what we just did. 
 
 # A slightly more complex example
-Lets look a the highschool dataset from `ggraph`. Now this data has a yearly component, we'll get to that part but for now lets stick to one year for simplicity. 
+Lets look a the highschool dataset from `ggraph`. This dataset was made by asking a class of students at a all boys highschool to name list their friends in 1957 and then again in 1958. To keep things simple I am going to just use the first year of data. So, lets filter for the first year of data and turn it into a tidygraph.
 ```{r}
 hs_tidy <- highschool %>% 
   filter(year == 1957) %>% # remove the time component for this example
-  select(-year) %>% 
+  select(-year) %>% # remove the year column we wont be needing it
   as_tbl_graph() # turn the edge list into a tbl_graph
 ```
 
@@ -102,7 +107,7 @@ ggraph(hs_tidy, layout = "stress") +
 ```
 
 
-Now that we have our data into tidygraph's tbl_graph object we can easily calculate many statistical measures for each node edge easily combining `activate()` and `mutate()`. There are quite a few centrality measures from igraph and all are fully supported with tidygraph, a full list can be found [HERE](https://rdrr.io/cran/tidygraph/man/centrality.html).
+Now that we have our data into tidygraph's tbl_graph object we can easily calculate many statistical measures for each node edge easily combining `activate()` and `mutate()`. There are quite a few centrality measures from igraph and *all* are fully supported with tidygraph. A full list can be found [HERE](https://rdrr.io/cran/tidygraph/man/centrality.html).
 ```{r}
 hs_manipulated <- hs_tidy %>% 
   activate(nodes) %>% 
@@ -117,12 +122,13 @@ hs_manipulated <- hs_tidy %>%
     
   ) %>%    
   activate(edges) %>% 
-  mutate(  # calculate edge centrality
+  mutate(  
+    # calculate edge centrality
     weight =  centrality_edge_betweenness()
   )
 ```
 
-Let's take a look at our new metrics
+Just like that we calculated two types of node centrality, ran two grouping algorithms, and calculated edge betweenness! Let's take a look at our new metrics
 ```{r messages = FALSE, echo=FALSE}
 hs_manipulated %>% activate(nodes)
 ```
@@ -138,7 +144,7 @@ ggraph(hs_manipulated, layout = 'stress') +
 ```
 
 
-Now lets play around a bit with some of the functionality of ggraph. This package is made to behave a lot like ggplot2. However, one key difference is the layout argument. This tells ggraph what algorithm to use when laying out the nodes. You can really deep down this rabbit hole. If you want to you can start creating your own layouts with the [particles package](https://cran.r-project.org/web/packages/particles/vignettes/intro.html). 
+Now lets play around a bit with some of the functionality of ggraph. This package is made to behave a lot like ggplot2. However, one key difference is the layout argument. This tells ggraph what algorithm to use when laying out the nodes. You can go really deep down this rabbit hole. If you want to you can start creating your own layouts with the [particles package](https://cran.r-project.org/web/packages/particles/vignettes/intro.html). 
 
 Or, you can just do what I do and choose random ones until you get one you like.
 
@@ -225,4 +231,4 @@ forceNetwork(Links = d3_object$links,
 ```
 
 
-We will leave it there for now.
+We will leave it there for now, but if you are looking for more check out [this awesome post](https://www.data-imaginist.com/2018/tidygraph-1-1-a-tidy-hope/) from the creator of tidygraph. Or, for a really cool applied example check out [this analysis](https://www.samples-of-thoughts.com/2020/connecting-disinformation-with-tidygraph/) by [@corrieaar](https://twitter.com/corrieaar).

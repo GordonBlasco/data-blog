@@ -19,7 +19,7 @@
       
       <guid>/2020/03/08/2020-03-08-intro-to-networks/</guid>
       <description>In this post I will walk you through the basics of working with network objects in R. First we’ll create a simple network from scratch, manipulate it using tidygraph’s very clean framework, and then do some simple plotting using ggraph and networkD3. After that we will step it up a bit with a larger dataset to calculate some network metrics.
-My goal for this post is to show how the basic manipulation steps from the simple example can also be used on much more intense data to easily allow us to carry out a lot of complex calculations with very little code.</description>
+My goal for this post is to show how the basic manipulation steps from the simple example can also be used on much more complicated data to easily allow us to carry out many complex calculations with very little code.</description>
     </item>
     
   </channel>
